@@ -8,9 +8,9 @@ import sys
 logger = logging.getLogger('tamaraw')
 
 '''params'''
-MON_SITE_NUM = 100
-MON_INST_NUM = 90
-UNMON_SITE_NUM = 9000
+MON_SITE_NUM = 75
+MON_INST_NUM = 80
+UNMON_SITE_NUM = 0
 
 def config_logger():
     # Set file

@@ -24,6 +24,9 @@ python main.py <traces_path> [-c <config>] [-format <suffix>]
 # 使用默认配置
 python main.py ../../data/tor/
 
+cd /home/shy/Project/WebsiteFingerprinting/defenses
+python front/main.py /home/shy/Project/dataset/tor_fiber -c t1 --log fiber1
+python front/main.py /home/shy/Project/dataset/tor_starlink -c t1 --log starlink1
 # 使用t1配置
 python main.py ../../data/tor/ -c t1
 
@@ -38,6 +41,28 @@ python mp_main.py ../results/glued_trace/ -format ".merge"
 - `t3`: 同t1，start_padding_time=8
 - `t4`: 同t1，start_padding_time=9
 - `t5`: 同t1，start_padding_time=10
+
+具体调优办法
+先用当前参数生成防御后的数据集
+用 overhead.py 统计实际 overhead
+如果结果：
+> 1.24×：降低 client_dummy_pkt_num 和 server_dummy_pkt_num
+< 1.24×：提高 client_dummy_pkt_num 和 server_dummy_pkt_num
+更精确的估算方法
+先计算你的数据集平均真实包数 R：
+
+真实包数 = 非 888、非 999 的包数
+然后：
+
+目标假包数 F ≈ 0.24 * R
+由于当前实现约为随机 [1, max-1]：
+预期假包数 ≈ client_dummy_pkt_num / 2 + server_dummy_pkt_num / 2
+因此可以近似按下面方式配置：
+
+client_dummy_pkt_num ≈ 2 * 预期客户端假包数
+server_dummy_pkt_num ≈ 2 * 预期服务器假包数
+
+
 
 ---
 
@@ -124,7 +149,7 @@ python main.py ../../data/tor/ -c histos
 ### 计算开销
 ```bash
 cd utils
-python overhead.py <defended_dataset_path>
+python overhead.py /home/shy/Project/WebsiteFingerprinting/defenses/results/fiber_front -format "" --log fiber_front
 ```
 
 ### 生成标准化数据集

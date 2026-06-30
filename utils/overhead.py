@@ -65,7 +65,21 @@ def parallel(flist, n_jobs = 25):
 
 if __name__ == '__main__':
     args = parse_arguments()
-    flist = glob.glob(os.path.join(args.dir,'*'+args.format))
+    if not os.path.isdir(args.dir):
+        logger.error('Trace directory not found: %s', args.dir)
+        sys.exit(1)
+
+    flist = glob.glob(os.path.join(args.dir, '*' + args.format))
+    if not flist and args.format == '.merge':
+        fallback = [f for f in glob.glob(os.path.join(args.dir, '*')) if os.path.isfile(f)]
+        if fallback:
+            logger.info('No files matched .merge; using all regular files in %s', args.dir)
+            flist = fallback
+
+    if not flist:
+        logger.error('No trace files found in %s (pattern: %s)', args.dir, '*' + args.format)
+        sys.exit(1)
+
     # ovhds = []
     # for f in flist:
     #     overhead = calc_single_ovhd(f)
