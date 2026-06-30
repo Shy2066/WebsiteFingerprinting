@@ -7,3 +7,7 @@ df_train.sh
 attacks/df/log
 
 .vscode
+
+defenses/log/
+
+utils/log

@@ -15,14 +15,26 @@ import time
 import datetime
 from pprint import pprint
 logger = logging.getLogger('ranpad2')
-def init_directories():
+
+def resolve_log_path(log_arg, dataset_path):
+    if log_arg == 'stdout':
+        return None
+    dataset_name = os.path.basename(os.path.normpath(dataset_path)) or 'dataset'
+    timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+    log_name = '{}_front_{}.log'.format(dataset_name, timestamp)
+    if not os.path.exists(ct.LOG_DIR):
+        makedirs(ct.LOG_DIR, exist_ok=True)
+    return join(ct.LOG_DIR, log_name)
+
+
+def init_directories(dataset_path):
     # Create a results dir if it doesn't exist yet
     if not os.path.exists(ct.RESULTS_DIR):
         makedirs(ct.RESULTS_DIR)
 
-    # Define output directory
-    timestamp = strftime('%m%d_%H%M')
-    output_dir = join(ct.RESULTS_DIR, 'ranpad2_'+timestamp)
+    dataset_name = os.path.basename(os.path.normpath(dataset_path)) or 'dataset'
+    timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+    output_dir = join(ct.RESULTS_DIR, '{}_front_{}'.format(dataset_name, timestamp))
     makedirs(output_dir)
 
     return output_dir
@@ -30,7 +42,11 @@ def config_logger(args):
     # Set file
     log_file = sys.stdout
     if args.log != 'stdout':
-        log_file = open(args.log, 'w')
+        log_path = resolve_log_path(args.log, args.p)
+        log_dir = os.path.dirname(log_path)
+        if log_dir and not os.path.exists(log_dir):
+            makedirs(log_dir, exist_ok=True)
+        log_file = open(log_path, 'w')
     ch = logging.StreamHandler(log_file)
 
     # Set logging format
@@ -194,7 +210,7 @@ if __name__ == '__main__':
         flist.append(join(args.p, str(i)+args.format))
 
     # Init run directories
-    output_dir = init_directories()
+    output_dir = init_directories(args.p)
     logger.info("Traces are dumped to {}".format(output_dir))
     start = time.time()
     # for i,f in enumerate(flist):

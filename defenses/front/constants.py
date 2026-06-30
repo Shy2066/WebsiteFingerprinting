@@ -3,6 +3,7 @@ from os.path import join, abspath, dirname, pardir
 # Directories
 BASE_DIR = abspath(join(dirname(__file__), pardir))
 RESULTS_DIR = join(BASE_DIR, "results")
+LOG_DIR = join(BASE_DIR, "log")
 
 # Files
 CONFIG_FILE = join(BASE_DIR+'/front', 'config.ini')

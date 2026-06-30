@@ -6,13 +6,34 @@ import glob
 import os
 import sys
 import multiprocessing as mp
+from datetime import datetime
 
 logger = logging.getLogger('ovhd')
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+LOG_DIR = os.path.join(SCRIPT_DIR, 'log')
+
+
+def resolve_log_path(log_arg, input_dir):
+    if log_arg == 'stdout':
+        return None
+    dataset_name = os.path.basename(os.path.normpath(input_dir)) or 'dataset'
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    log_name = '{}_overhead_{}.log'.format(dataset_name, timestamp)
+    if not os.path.exists(LOG_DIR):
+        os.makedirs(LOG_DIR, exist_ok=True)
+    return os.path.join(LOG_DIR, log_name)
+
+
 def config_logger(args):
     # Set file
     log_file = sys.stdout
     if args.log != 'stdout':
-        log_file = open(args.log, 'w')
+        log_path = resolve_log_path(args.log, args.dir)
+        log_dir = os.path.dirname(log_path)
+        if log_dir and not os.path.exists(log_dir):
+            os.makedirs(log_dir, exist_ok=True)
+        log_file = open(log_path, 'w')
     ch = logging.StreamHandler(log_file)
 
     # Set logging format
