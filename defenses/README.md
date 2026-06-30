@@ -26,7 +26,7 @@ python main.py ../../data/tor/
 
 cd /home/shy/Project/WebsiteFingerprinting/defenses
 python front/main.py /home/shy/Project/dataset/tor_fiber -c t1 --log fiber1
-python front/main.py /home/shy/Project/dataset/tor_starlink -c t2 --log starlink
+python front/main.py /home/shy/Project/dataset/tor_starlink -c t1 --log starlink
 # 使用t1配置
 python main.py ../../data/tor/ -c t1
 
@@ -151,7 +151,7 @@ python main.py ../../data/tor/ -c histos
 cd utils
 python overhead.py /home/shy/Project/WebsiteFingerprinting/defenses/results/tor_fiber_front_20260630_103730 -format "" --log fiber_front
 
-python overhead.py /home/shy/Project/WebsiteFingerprinting/defenses/results/tor_starlink_front_20260630_104925 -format "" --log fiber_front
+python overhead.py /home/shy/Project/WebsiteFingerprinting/defenses/results/tor_starlink_front_20260630_105354 -format "" --log starlink_front
 ```
 
 ### 生成标准化数据集
